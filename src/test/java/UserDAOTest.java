@@ -8,9 +8,9 @@ public class UserDAOTest {
         UserDao dao = new UserDao();
 
         User user = new User();
-        user.setId("whiteship");
-        user.setName("백기선");
-        user.setPassword("married");
+        user.setId("abc123");
+        user.setName("홍길동");
+        user.setPassword("hellow0rld");
 
         dao.add(user);
 

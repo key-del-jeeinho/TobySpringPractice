@@ -1,3 +1,5 @@
+import com.xylope.toby_spring_practice.user.dao.DConnectionMaker;
+import com.xylope.toby_spring_practice.user.dao.DaoFactory;
 import com.xylope.toby_spring_practice.user.dao.UserDao;
 import com.xylope.toby_spring_practice.user.domain.User;
 
@@ -5,10 +7,10 @@ import java.sql.SQLException;
 
 public class UserDAOTest {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao dao = new UserDao();
+        UserDao dao = new DaoFactory().userDao();
 
         User user = new User();
-        user.setId("abc123");
+        user.setId("efgh123");
         user.setName("홍길동");
         user.setPassword("hellow0rld");
 

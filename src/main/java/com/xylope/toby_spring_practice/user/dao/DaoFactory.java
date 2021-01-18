@@ -5,4 +5,8 @@ public class DaoFactory {
         ConnectionMaker connectionMaker = new DConnectionMaker();
         return new UserDao(connectionMaker);
     }
+
+    private ConnectionMaker connectionMaker() {
+        return new DConnectionMaker();
+    }
 }

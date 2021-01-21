@@ -1,15 +1,13 @@
 package com.xylope.toby_spring_practice.user.dao;
 
 import com.xylope.toby_spring_practice.user.domain.User;
+import lombok.Setter;
 
 import java.sql.*;
 
 public class UserDao {
+    @Setter
     private ConnectionMaker connectionMaker;
-
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
-    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection c = connectionMaker.makeConnection();

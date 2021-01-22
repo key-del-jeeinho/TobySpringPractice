@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- ConnectionMaker -->
+    <bean id="connectionMaker" class="com.xylope.toby_spring_practice.user.dao.DConnectionMaker"/>
+    <bean id="countingConnectionMaker" class="com.xylope.toby_spring_practice.user.dao.CountingConnectionMaker">
+            <property name="realConnectionMaker" ref="connectionMaker"/>
+    </bean>
+
+    <!-- UserDAO -->
+    <bean id="userDao" class="com.xylope.toby_spring_practice.user.dao.UserDao">
+        <property name="connectionMaker" ref="connectionMaker"/>
+    </bean>
+    <bean id="countingUserDao" class="com.xylope.toby_spring_practice.user.dao.UserDao">
+        <property name="connectionMaker" ref="countingConnectionMaker"/>
+    </bean>
+</beans>

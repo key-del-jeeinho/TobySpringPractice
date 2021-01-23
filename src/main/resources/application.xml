@@ -2,17 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <!-- ConnectionMaker -->
-    <bean id="connectionMaker" class="com.xylope.toby_spring_practice.user.dao.DConnectionMaker"/>
-    <bean id="countingConnectionMaker" class="com.xylope.toby_spring_practice.user.dao.CountingConnectionMaker">
-            <property name="realConnectionMaker" ref="connectionMaker"/>
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/toby_spring_practice?characterEncoding=UTF-8&amp;serverTimezone=UTC"/>
+        <property name="username" value="root"/>
+        <property name="password" value="0000"/>
     </bean>
 
-    <!-- UserDAO -->
     <bean id="userDao" class="com.xylope.toby_spring_practice.user.dao.UserDao">
-        <property name="connectionMaker" ref="connectionMaker"/>
-    </bean>
-    <bean id="countingUserDao" class="com.xylope.toby_spring_practice.user.dao.UserDao">
-        <property name="connectionMaker" ref="countingConnectionMaker"/>
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 </beans>

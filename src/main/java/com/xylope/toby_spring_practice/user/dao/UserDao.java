@@ -3,14 +3,15 @@ package com.xylope.toby_spring_practice.user.dao;
 import com.xylope.toby_spring_practice.user.domain.User;
 import lombok.Setter;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
     @Setter
-    private ConnectionMaker connectionMaker;
+    private DataSource dataSource;
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = connectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "insert into users (id, name, password) values(?,?,?)"
@@ -26,7 +27,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = connectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "select * from users where id = ?"

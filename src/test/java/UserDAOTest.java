@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 public class UserDAOTest {
     @Test
-    public void addAndGet() throws SQLException, ClassNotFoundException {
+    public void testAddAndGet() throws SQLException, ClassNotFoundException {
         //테스트 이전 필요객체 설정
         ApplicationContext context = new GenericXmlApplicationContext("application.xml");
         UserDao dao = context.getBean("userDao", UserDao.class);

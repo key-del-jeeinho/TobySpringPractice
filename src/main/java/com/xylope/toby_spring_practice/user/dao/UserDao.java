@@ -2,6 +2,7 @@ package com.xylope.toby_spring_practice.user.dao;
 
 import com.xylope.toby_spring_practice.user.domain.User;
 import lombok.Setter;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -10,7 +11,7 @@ public class UserDao {
     @Setter
     private DataSource dataSource;
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
+    public void add(User user) throws SQLException {
         Connection c = dataSource.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
@@ -26,7 +27,7 @@ public class UserDao {
         c.close();
     }
 
-    public User get(String id) throws ClassNotFoundException, SQLException {
+    public User get(String id) throws SQLException {
         Connection c = dataSource.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
@@ -35,11 +36,18 @@ public class UserDao {
         ps.setString(1, id);
 
         ResultSet rs = ps.executeQuery();
-        rs.next();
-        User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
+
+        User user = null; //id 를 찾을 수 없을 경우를 대비하기위해 null 로 초기화한다.
+
+        if(rs.next()) {
+            user = new User();
+            user.setId(rs.getString("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+        }
+
+        if(user == null)
+            throw new EmptyResultDataAccessException(1);
 
         rs.close();
         ps.close();

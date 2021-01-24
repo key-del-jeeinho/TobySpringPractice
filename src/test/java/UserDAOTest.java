@@ -1,28 +1,29 @@
 import com.xylope.toby_spring_practice.user.dao.UserDao;
 import com.xylope.toby_spring_practice.user.domain.User;
+import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.sql.SQLException;
 
+import static org.junit.Assert.assertEquals;
+
 public class UserDAOTest {
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    @Test
+    public void addAndGet() throws SQLException, ClassNotFoundException {
         ApplicationContext context = new GenericXmlApplicationContext("application.xml");
         UserDao dao = context.getBean("userDao", UserDao.class);
 
         User user = new User();
-        user.setId("efgh1ㅏ23");
-        user.setName("홍길동입니다");
+        user.setId("abdd123");
+        user.setName("홍길동");
         user.setPassword("hellow0rld");
-
+        
         dao.add(user);
-
-        System.out.println(user.getId() + " 등록 성공");
-
+        
         User user2 = dao.get(user.getId());
-        System.out.println(user2.getName());
 
-        System.out.println(user2.getPassword());
-        System.out.println(user2.getId() + " 조회 성공");
+        assertEquals(user.getName(), user2.getName());
+        assertEquals(user.getPassword(), user2.getPassword());
     }
 }

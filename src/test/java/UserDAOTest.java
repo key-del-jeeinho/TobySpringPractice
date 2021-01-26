@@ -1,5 +1,6 @@
 import com.xylope.toby_spring_practice.user.dao.UserDao;
 import com.xylope.toby_spring_practice.user.domain.User;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -10,14 +11,18 @@ import java.sql.SQLException;
 import static org.junit.Assert.assertEquals;
 
 public class UserDAOTest {
-    @Test
-    public void testAddAndGet() throws SQLException {
+    private UserDao dao;
+
+    @Before
+    public void setUp() throws SQLException {
         //테스트 이전 필요객체 설정
         ApplicationContext context = new GenericXmlApplicationContext("application.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
+        dao = context.getBean("userDao", UserDao.class);
         dao.deleteAll(); //테스트 이전 모든 잔여 튜플을 지운다
-        
+    }
+
+    @Test
+    public void testAddAndGet() throws SQLException {
         //테스트 더미데이터 설정
         User[] users = {
                 new User("acc1@", "김아무개", "amugae11@"),
@@ -43,11 +48,6 @@ public class UserDAOTest {
 
     @Test
     public void testCount() throws SQLException {
-        //테스트 이전 필요객체 설정
-        ApplicationContext context = new GenericXmlApplicationContext("application.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
-        dao.deleteAll(); //테스트 이전 모든 잔여 튜플을 지운다
         assertEquals(dao.getCount(), 0); //모든 튜플이 다 삭제되었는지 검사한다
 
         //테스트 더미데이터 설정
@@ -68,10 +68,6 @@ public class UserDAOTest {
 
     @Test (expected = EmptyResultDataAccessException.class)
     public void getUserFailure() throws SQLException {
-        ApplicationContext context = new GenericXmlApplicationContext("application.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
-        dao.deleteAll();
         assertEquals(dao.getCount(), 0);
 
         User user = new User("acc@", "말복순", "fortune01@");

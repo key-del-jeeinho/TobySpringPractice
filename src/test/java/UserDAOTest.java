@@ -2,21 +2,29 @@ import com.xylope.toby_spring_practice.user.dao.UserDao;
 import com.xylope.toby_spring_practice.user.domain.User;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("application.xml")
 public class UserDAOTest {
+    @Autowired
+    ApplicationContext context;
     private UserDao dao;
 
     @Before
     public void setUp() throws SQLException {
         //테스트 이전 필요객체 설정
-        ApplicationContext context = new GenericXmlApplicationContext("application.xml");
+        context = new GenericXmlApplicationContext("application.xml");
         dao = context.getBean("userDao", UserDao.class);
         dao.deleteAll(); //테스트 이전 모든 잔여 튜플을 지운다
     }

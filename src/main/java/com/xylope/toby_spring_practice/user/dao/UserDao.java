@@ -35,7 +35,12 @@ public class UserDao {
         );
         ps.setString(1, id);
 
-        ResultSet rs = ps.executeQuery();
+        ResultSet rs;
+        try {
+            rs = ps.executeQuery();
+        } catch (SQLException e) {
+            throw e;
+        }
 
         User user = null; //id 를 찾을 수 없을 경우를 대비하기위해 null 로 초기화한다.
 
@@ -63,27 +68,59 @@ public class UserDao {
                 "delete from users"
         );
 
-        ps.executeUpdate();
+        try {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(ps != null) { //close 메서드 호출시 NullPointerException 방지용
+                try {
+                    ps.close();
+                } catch (SQLException e) { //예외가 발생하여 Connection 이 close 되지 않을경우를 방지하기위한 empty catch 문
+                }
+            }
 
-        ps.close();
-        c.close();
+            if(c != null) { //close 메서드 호출시 NullPointerException 방지용
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
     }
 
     public int getCount() throws SQLException {
-        Connection c = dataSource.getConnection();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-        PreparedStatement ps = c.prepareStatement(
-                "select count(*) from users"
-        );
-
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-        int count = rs.getInt(1);
-
-        ps.close();
-        rs.close();
-        c.close();
-
+        int count = 0;
+        try {
+            c = dataSource.getConnection();
+            ps = c.prepareStatement(
+                    "select count(*) from users"
+            );
+            rs = ps.executeQuery();
+            rs.next();
+            count = rs.getInt(1);
+        } catch (SQLException e) {}
+        finally {
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {}
+            }
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {}
+            }
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {}
+            }
+        }
         return count;
     }
 }

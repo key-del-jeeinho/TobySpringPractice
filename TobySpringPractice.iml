@@ -6,6 +6,16 @@
         <fileset id="fileset" name="Application" removed="false">
           <file>file://$MODULE_DIR$/src/main/resources/application.xml</file>
         </fileset>
+        <fileset id="fileset2" name="apllication" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/application-bean.xml</file>
+        </fileset>
+        <fileset id="fileset3" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/application-bean.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/test-applicationContext.xml</file>
+        </fileset>
+        <fileset id="fileset4" name="Spring Application Context 2" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/test-applicationContext.xml</file>
+        </fileset>
       </configuration>
     </facet>
   </component>

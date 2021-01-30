@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -15,17 +15,19 @@ import java.sql.SQLException;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("application.xml")
+@ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDAOTest {
     @Autowired
     ApplicationContext context;
     private UserDao dao;
 
     @Before
+    @DirtiesContext
     public void setUp() throws SQLException {
         //테스트 이전 필요객체 설정
-        context = new GenericXmlApplicationContext("application.xml");
+        //context = new GenericXmlApplicationContext("applicationContext.xml");
         dao = context.getBean("userDao", UserDao.class);
+        //dao.setDataSource(new SingleConnectionDataSource());
         dao.deleteAll(); //테스트 이전 모든 잔여 튜플을 지운다
     }
 

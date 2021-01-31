@@ -4,15 +4,14 @@ import com.xylope.toby_spring_practice.user.domain.User;
 import lombok.Setter;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
     @Setter
-    private DataSource dataSource;
+    private JdbcContext jdbcContext;
 
-    public void add(User user) throws SQLException {
-        jdbcContextWithStatementStrategy(c -> {
+    public void add(final User user) throws SQLException {
+        jdbcContext.workWithStatementStrategy(c -> {
             PreparedStatement ps = c.prepareStatement(
                     "insert into users (id, name, password) values(?,?,?)"
             );
@@ -24,8 +23,9 @@ public class UserDao {
         );
     }
 
+    //스파게티코드
     public User get(String id) throws SQLException {
-        Connection c = dataSource.getConnection();
+        Connection c = jdbcContext.getDataSource().getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "select * from users where id = ?"
@@ -59,9 +59,11 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        jdbcContextWithStatementStrategy(c -> c.prepareStatement("delete from users"));
+        jdbcContext.workWithStatementStrategy(c -> c.prepareStatement("delete from users"));
     }
 
+
+    //스파게티코드
     public int getCount() throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
@@ -69,7 +71,7 @@ public class UserDao {
 
         int count = 0;
         try {
-            c = dataSource.getConnection();
+            c = jdbcContext.getDataSource().getConnection();
             ps = c.prepareStatement(
                     "select count(*) from users"
             );
@@ -95,21 +97,5 @@ public class UserDao {
             }
         }
         return count;
-    }
-
-    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
-        Connection c = null;
-        PreparedStatement ps = null;
-        try {
-            c = dataSource.getConnection();
-            ps = stmt.makePreparedStatement(c);
-
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if(ps != null) try {ps.close();} catch (SQLException e) {}
-            if(c != null) try {c.close();} catch (SQLException e) {}
-        }
     }
 }

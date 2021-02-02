@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -84,5 +85,28 @@ public class UserDAOTest {
         dao.add(user);
 
         dao.get("acc_unknown@");
+    }
+
+    @Test
+    public void getAll() throws SQLException {
+        //테스트 더미데이터 설정
+        User[] users = {
+                new User("acc1@", "홍길동", "sujaXD@"),
+                new User("acc2@", "땡철이", "stupid123@"),
+                new User("acc3@", "이몽룡", "lovechun12"),
+        };
+
+        for(User user : users)
+            dao.add(user);
+
+        List<User> list = dao.getAll();
+        for(int i = 0; i < 3; i++)
+            assertEquals(users[i], list.get(i));
+
+        //Negative - 만약 튜플의 개수가 0일경우
+        dao.deleteAll();
+
+        List<User> emptyList = dao.getAll();
+        assertEquals(emptyList.size(), 0);
     }
 }

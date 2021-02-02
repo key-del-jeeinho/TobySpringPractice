@@ -13,7 +13,11 @@ public class Calculator {
         return lineReadTemplate(path, (line, res)-> res * Integer.parseInt(line), 1);
     }
 
-    public Integer fileReadTemplate(String path, BufferedReaderCallback callback) throws IOException {
+    public String concatenate(String path) throws IOException {
+        return lineReadTemplate(path, (line, res) -> res + line, "");
+    }
+
+    public <T>T fileReadTemplate(String path, BufferedReaderCallback<T> callback) throws IOException {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(path));
@@ -29,14 +33,14 @@ public class Calculator {
         }
     }
 
-    public Integer lineReadTemplate(String path, BufferedReaderLineCallback callback, int initVal) throws IOException {
+    public <T>T lineReadTemplate(String path, BufferedReaderLineCallback<T> callback, T initVal) throws IOException {
         return fileReadTemplate(path, br -> {
-                    String line;
-                    int res = initVal;
-                    while ((line = br.readLine()) != null) {
-                        res = callback.doSomethingWithLine(line, res);
-                    }
-                    return res;
-                });
+            String line;
+            T res = initVal;
+            while ((line = br.readLine()) != null) {
+                res = callback.doSomethingWithLine(line, res);
+            }
+            return res;
+        });
     }
 }

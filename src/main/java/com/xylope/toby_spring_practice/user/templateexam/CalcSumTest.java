@@ -23,5 +23,7 @@ public class CalcSumTest {
         assertEquals(sum, 10);
         int mul = calculator.calcMultiple(path);
         assertEquals(mul, 24);
+        String concatenate = calculator.concatenate(path);
+        assertEquals(concatenate, "1234");
     }
 }

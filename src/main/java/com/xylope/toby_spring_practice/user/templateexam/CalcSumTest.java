@@ -1,5 +1,6 @@
 package com.xylope.toby_spring_practice.user.templateexam;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -7,10 +8,20 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 
 public class CalcSumTest {
+    Calculator calculator;
+    String path;
+
+    @Before
+    public void setUp() {
+        calculator = new Calculator();
+        path = getClass().getResource("/numbers.txt").getPath();
+    }
+
     @Test
     public void sumOfNumbers() throws IOException {
-        Calculator calculator = new Calculator();
-        int sum = calculator.calcSum(getClass().getResource("/numbers.txt").getPath());
+        int sum = calculator.calcSum(path);
         assertEquals(sum, 10);
+        int mul = calculator.calcMultiple(path);
+        assertEquals(mul, 24);
     }
 }

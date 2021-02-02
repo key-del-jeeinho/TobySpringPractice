@@ -1,14 +1,20 @@
 package com.xylope.toby_spring_practice.user.dao;
 
 import com.xylope.toby_spring_practice.user.domain.User;
-import lombok.Setter;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
-    @Setter
     private JdbcContext jdbcContext;
+    private DataSource dataSource;
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+        this.jdbcContext = new JdbcContext();
+        this.jdbcContext.setDataSource(dataSource);
+    }
 
     public void add(final User user) throws SQLException {
         jdbcContext.workWithStatementStrategy(c -> {
@@ -25,7 +31,7 @@ public class UserDao {
 
     //스파게티코드
     public User get(String id) throws SQLException {
-        Connection c = jdbcContext.getDataSource().getConnection();
+        Connection c = dataSource.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "select * from users where id = ?"
@@ -59,19 +65,19 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        jdbcContext.workWithStatementStrategy(c -> c.prepareStatement("delete from users"));
+        jdbcContext.executeQuery("delete from users");
     }
 
 
     //스파게티코드
-    public int getCount() throws SQLException {
+    public int getCount() {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         int count = 0;
         try {
-            c = jdbcContext.getDataSource().getConnection();
+            c = dataSource.getConnection();
             ps = c.prepareStatement(
                     "select count(*) from users"
             );

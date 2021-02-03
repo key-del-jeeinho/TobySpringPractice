@@ -1,4 +1,5 @@
 import com.xylope.toby_spring_practice.user.dao.JdbcUserDao;
+import com.xylope.toby_spring_practice.user.dao.UserDao;
 import com.xylope.toby_spring_practice.user.domain.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 public class UserDAOTest {
     @Autowired
     ApplicationContext context;
-    private JdbcUserDao dao;
+    private UserDao dao;
 
     @Before
     @DirtiesContext

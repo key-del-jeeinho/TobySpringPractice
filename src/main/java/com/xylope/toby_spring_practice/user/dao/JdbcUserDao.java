@@ -30,7 +30,7 @@ public class JdbcUserDao implements UserDao{
     }
 
     @Override
-    public void deleteAll() throws SQLException {
+    public void deleteAll() {
         jdbcOperations.update("delete from users");
     }
 

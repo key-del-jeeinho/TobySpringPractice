@@ -1,4 +1,4 @@
-import com.xylope.toby_spring_practice.user.dao.UserDao;
+import com.xylope.toby_spring_practice.user.dao.JdbcUserDao;
 import com.xylope.toby_spring_practice.user.domain.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,14 +20,14 @@ import static org.junit.Assert.assertEquals;
 public class UserDAOTest {
     @Autowired
     ApplicationContext context;
-    private UserDao dao;
+    private JdbcUserDao dao;
 
     @Before
     @DirtiesContext
     public void setUp() throws SQLException {
         //테스트 이전 필요객체 설정
         //context = new GenericXmlApplicationContext("applicationContext.xml");
-        dao = context.getBean("userDao", UserDao.class);
+        dao = context.getBean("jdbcUserDao", JdbcUserDao.class);
         //dao.setDataSource(new SingleConnectionDataSource());
         dao.deleteAll(); //테스트 이전 모든 잔여 튜플을 지운다
     }

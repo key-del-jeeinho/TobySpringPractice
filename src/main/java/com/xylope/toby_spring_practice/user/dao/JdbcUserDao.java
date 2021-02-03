@@ -5,7 +5,6 @@ import lombok.Setter;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.*;
 import java.util.ArrayList;
 
 public class JdbcUserDao implements UserDao{

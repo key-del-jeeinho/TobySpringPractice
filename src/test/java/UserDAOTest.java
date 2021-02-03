@@ -6,11 +6,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -21,6 +26,8 @@ import static org.junit.Assert.assertEquals;
 public class UserDAOTest {
     @Autowired
     ApplicationContext context;
+    @Autowired
+    DataSource dataSource;
     private UserDao dao;
 
     @Before
@@ -28,7 +35,7 @@ public class UserDAOTest {
     public void setUp() throws SQLException {
         //테스트 이전 필요객체 설정
         //context = new GenericXmlApplicationContext("applicationContext.xml");
-        dao = context.getBean("jdbcUserDao", JdbcUserDao.class);
+        dao = context.getBean("userDao", JdbcUserDao.class);
         //dao.setDataSource(new SingleConnectionDataSource());
         dao.deleteAll(); //테스트 이전 모든 잔여 튜플을 지운다
     }
@@ -109,5 +116,20 @@ public class UserDAOTest {
 
         List<User> emptyList = dao.getAll();
         assertEquals(emptyList.size(), 0);
+    }
+
+    @Test
+    public void duplicateKey() {
+        User user = new User("acc1@", "홍길동", "sujaXD@");
+
+        try {
+            dao.add(user);
+            dao.add(user);
+        } catch (DuplicateKeyException e) {
+            SQLException sqlE = (SQLException)e.getRootCause();
+            SQLExceptionTranslator translator = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+            assert sqlE != null;
+            assertEquals(translator.translate(null, null, sqlE).getClass(), DuplicateKeyException.class);
+        }
     }
 }

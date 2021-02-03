@@ -1,7 +1,6 @@
 package com.xylope.toby_spring_practice.user.dao;
 
 import com.xylope.toby_spring_practice.user.domain.User;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -11,25 +10,23 @@ import java.util.ArrayList;
 
 public class UserDao {
     private JdbcTemplate jdbcTemplate;
-    private DataSource dataSource;
+    private RowMapper<User> userMapper = (rs, rowNum) -> new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
 
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void add(final User user) throws SQLException {
+    public void add(final User user) {
         jdbcTemplate.update("insert into users (id, name, password) values (?, ?, ?)", user.getId(), user.getName(), user.getPassword());
     }
 
-    public User get(String id) throws SQLException {
+    public User get(String id) {
         return jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id},
-                (rs, rowNum) -> new User(rs.getString("id"), rs.getString("name"), rs.getString("password")));
+                userMapper);
     }
 
     public ArrayList<User> getAll() {
-        return (ArrayList<User>) jdbcTemplate.query("select * from users order by id", (rs, rowVal) ->
-             new User(rs.getString("id"), rs.getString("name"), rs.getString("password")));
+        return (ArrayList<User>) jdbcTemplate.query("select * from users order by id", userMapper);
     }
 
     public void deleteAll() throws SQLException {

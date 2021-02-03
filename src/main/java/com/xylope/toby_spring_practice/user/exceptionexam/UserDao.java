@@ -3,7 +3,6 @@ package com.xylope.toby_spring_practice.user.exceptionexam;
 import com.mysql.cj.exceptions.MysqlErrorNumbers;
 import com.xylope.toby_spring_practice.user.domain.User;
 import org.springframework.context.support.GenericXmlApplicationContext;
-import org.springframework.jdbc.support.SQLErrorCodes;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -11,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class UserDao {
-    public void add(User user) throws SQLException {
+    public void add(User user) throws DuplicateUserIdException, SQLException {
         DataSource dataSource = new GenericXmlApplicationContext("applicationContext.xml").getBean(DataSource.class);
         Connection c = null;
         PreparedStatement ps = null;
@@ -26,7 +25,7 @@ public class UserDao {
         } catch (SQLException e) {
             if(e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY)
                 throw new DuplicateUserIdException(e);
-            else throw e;
+            else throw new RuntimeException(e);
         } finally {
             if(ps != null) {
                 ps.close();

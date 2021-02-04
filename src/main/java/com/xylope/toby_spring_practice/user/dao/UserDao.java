@@ -10,4 +10,6 @@ public interface UserDao {
     ArrayList<User> getAll();
     void deleteAll();
     int getCount();
+
+    void update(User user);
 }

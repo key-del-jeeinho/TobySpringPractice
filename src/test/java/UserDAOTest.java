@@ -1,12 +1,12 @@
 import com.xylope.toby_spring_practice.user.dao.JdbcUserDao;
 import com.xylope.toby_spring_practice.user.dao.UserDao;
+import com.xylope.toby_spring_practice.user.domain.Level;
 import com.xylope.toby_spring_practice.user.domain.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
@@ -131,5 +131,25 @@ public class UserDAOTest {
             assert sqlE != null;
             assertEquals(translator.translate(null, null, sqlE).getClass(), DuplicateKeyException.class);
         }
+    }
+
+    @Test
+    public void updateData() {
+        User user = new User("acc1@", "홍길동", "sujaXD@");
+        User user2 = new User("acc2@", "땡철이", "stupid123@");
+
+        dao.add(user);
+        dao.add(user2);
+
+        assertEquals(user, dao.get(user.getId()));
+
+        user.setLevel(Level.GOLD);
+        user.setName("홍길동닉변함");
+        user.setLoginCnt(1);
+
+        dao.update(user);
+
+        assertEquals(user, dao.get(user.getId()));
+        assertEquals(user2, dao.get(user2.getId()));
     }
 }

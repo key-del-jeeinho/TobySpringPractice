@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.util.ArrayList;
 
-public class JdbcUserDao implements UserDao{
+public class UserDaoJdbc implements UserDao{
     @Setter
     private JdbcOperations jdbcOperations;
     private RowMapper<User> userMapper = (rs, rowNum) -> new User(rs.getString("id"), rs.getString("name"), rs.getString("password"),

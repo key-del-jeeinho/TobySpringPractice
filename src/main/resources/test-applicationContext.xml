@@ -9,7 +9,7 @@
         <property name="password" value="0000"/>
     </bean>
 
-    <bean id="userDao" class="com.xylope.toby_spring_practice.user.dao.JdbcUserDao">
+    <bean id="userDao" class="com.xylope.toby_spring_practice.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 </beans>

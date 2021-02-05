@@ -5,7 +5,6 @@ import lombok.*;
 
 @EqualsAndHashCode
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class User {
     @Getter @NonNull
     private final String id;
@@ -19,13 +18,4 @@ public class User {
     private int loginCnt;
     @Getter @Setter
     private int voteCnt;
-
-    public User(String id, String name, String password) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.level = Level.BRONZE;
-        this.loginCnt = 0;
-        this.voteCnt = 0;
-    }
 }

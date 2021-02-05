@@ -4,7 +4,7 @@ import com.xylope.toby_spring_practice.user.domain.User;
 
 import java.util.ArrayList;
 
-public class HibernateUserDao implements UserDao{
+public class UserDaoJpa implements UserDao{
     @Override
     public void add(User user) {
 

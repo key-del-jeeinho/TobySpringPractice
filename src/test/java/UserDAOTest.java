@@ -1,4 +1,4 @@
-import com.xylope.toby_spring_practice.user.dao.JdbcUserDao;
+import com.xylope.toby_spring_practice.user.dao.UserDaoJdbc;
 import com.xylope.toby_spring_practice.user.dao.UserDao;
 import com.xylope.toby_spring_practice.user.domain.Level;
 import com.xylope.toby_spring_practice.user.domain.User;
@@ -35,7 +35,7 @@ public class UserDAOTest {
     public void setUp() throws SQLException {
         //테스트 이전 필요객체 설정
         //context = new GenericXmlApplicationContext("applicationContext.xml");
-        dao = context.getBean("userDao", JdbcUserDao.class);
+        dao = context.getBean("userDao", UserDaoJdbc.class);
         //dao.setDataSource(new SingleConnectionDataSource());
         dao.deleteAll(); //테스트 이전 모든 잔여 튜플을 지운다
     }
@@ -44,8 +44,8 @@ public class UserDAOTest {
     public void testAddAndGet() throws SQLException {
         //테스트 더미데이터 설정
         User[] users = {
-                new User("acc1@", "김아무개", "amugae11@"),
-                new User("acc2@", "개돌순", "st0neGirl@")
+                new User("acc1@", "김아무개", "amugae11@", Level.BRONZE, 0, 0),
+                new User("acc2@", "개돌순", "st0neGirl@", Level.BRONZE, 0, 0)
         };
 
         assertEquals(dao.getCount(), 0); //테이블에 아직 행을 추가하지 않았으므로, 튜플의 수가 0이어야함 <- getCount 메서드 테스트
@@ -71,9 +71,9 @@ public class UserDAOTest {
 
         //테스트 더미데이터 설정
         User[] users = {
-                new User("acc1@", "홍길동", "sujaXD@"),
-                new User("acc2@", "땡철이", "stupid123@"),
-                new User("acc3@", "이몽룡", "lovechun12"),
+                new User("acc1@", "홍길동", "sujaXD@", Level.BRONZE, 0, 0),
+                new User("acc2@", "땡철이", "stupid123@", Level.BRONZE, 0, 0),
+                new User("acc3@", "이몽룡", "lovechun12", Level.BRONZE, 0, 0),
         };
 
         //예상 카운트값
@@ -89,7 +89,7 @@ public class UserDAOTest {
     public void getUserFailure() throws SQLException {
         assertEquals(dao.getCount(), 0);
 
-        User user = new User("acc@", "말복순", "fortune01@");
+        User user = new User("acc@", "말복순", "fortune01@", Level.BRONZE, 0, 0);
         dao.add(user);
 
         dao.get("acc_unknown@");
@@ -99,9 +99,9 @@ public class UserDAOTest {
     public void getAll() throws SQLException {
         //테스트 더미데이터 설정
         User[] users = {
-                new User("acc1@", "홍길동", "sujaXD@"),
-                new User("acc2@", "땡철이", "stupid123@"),
-                new User("acc3@", "이몽룡", "lovechun12"),
+                new User("acc1@", "홍길동", "sujaXD@", Level.BRONZE, 0, 0),
+                new User("acc2@", "땡철이", "stupid123@", Level.BRONZE, 0, 0),
+                new User("acc3@", "이몽룡", "lovechun12", Level.BRONZE, 0, 0),
         };
 
         for(User user : users)
@@ -120,7 +120,7 @@ public class UserDAOTest {
 
     @Test
     public void duplicateKey() {
-        User user = new User("acc1@", "홍길동", "sujaXD@");
+        User user = new User("acc1@", "홍길동", "sujaXD@", Level.BRONZE, 0, 0);
 
         try {
             dao.add(user);
@@ -135,8 +135,8 @@ public class UserDAOTest {
 
     @Test
     public void updateData() {
-        User user = new User("acc1@", "홍길동", "sujaXD@");
-        User user2 = new User("acc2@", "땡철이", "stupid123@");
+        User user = new User("acc1@", "홍길동", "sujaXD@", Level.BRONZE, 0, 0);
+        User user2 = new User("acc2@", "땡철이", "stupid123@", Level.BRONZE, 0, 0);
 
         dao.add(user);
         dao.add(user2);

@@ -47,4 +47,11 @@ public class UserService {
             return true;
         } else return false;
     }
+
+    public void add(User user) {
+        //Service Logic
+        if(user.getLevel() == null)
+            user.setLevel(Level.BRONZE);
+        userDao.add(user);
+    }
 }

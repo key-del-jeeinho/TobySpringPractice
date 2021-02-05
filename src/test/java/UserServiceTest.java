@@ -54,6 +54,23 @@ public class UserServiceTest {
         }
     }
 
+    @Test
+    public void add() {
+        dao.deleteAll(); //테스트 이전 잔여데이터 초기화
+
+        User userWithLevel = new User("acc@2", "위드미위드레벨", "novel", Level.GOLD, 0, 0);
+        User userWithoutLevel = new User("acc@1", "슈퍼계정이라랩없음", "novel", null, 0, 0);
+
+        userService.add(userWithLevel);
+        userService.add(userWithoutLevel);
+
+        User userWithLevelRead = dao.get(userWithLevel.getId());
+        User userWithoutLevelRead = dao.get(userWithoutLevel.getId());
+
+        assertEquals(userWithLevelRead.getLevel(), userWithLevel.getLevel());
+        assertEquals(userWithoutLevelRead.getLevel(), Level.BRONZE);
+    }
+
     public void checkLevel(User user, Level level) {
         Level userLevel = dao.get(user.getId()).getLevel();
         assertEquals(userLevel, level);

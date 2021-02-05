@@ -1,15 +1,15 @@
 package com.xylope.toby_spring_practice.user.service;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.xylope.toby_spring_practice.user.dao.UserDao;
 import com.xylope.toby_spring_practice.user.domain.Level;
 import com.xylope.toby_spring_practice.user.domain.User;
-import com.xylope.toby_spring_practice.user.exception.UnknownUserLevelException;
 import lombok.Setter;
 
 import java.util.List;
 
 public class UserService {
+    public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
+    public static final int MIN_VOTECOUNT_FOR_GOLD = 30;
     @Setter
     UserDao userDao;
 
@@ -17,35 +17,27 @@ public class UserService {
         List<User> users = userDao.getAll();
         Boolean changed = null;
         for(User user : users) {
-            switch (user.getLevel()) {
-                case BRONZE:
-                    changed = upgradeToSilver(user);
-                    break;
-                case SILVER:
-                    changed = upgradeToGold(user);
-                    break;
-                case GOLD:
-                    changed = false;
-                    break;
-                default:
-                    throw new UnknownUserLevelException();
-            }
-            if(changed) userDao.update(user);
-            changed = null;
+            if(canUpgradeLevel(user))
+                upgradeLevel(user);
         }
     }
 
-    private boolean upgradeToSilver(User user) {
-        if(user.getLoginCnt() >= 50) {
-            user.setLevel(Level.SILVER);
-            return true;
-        } else return false;
+    private void upgradeLevel(User user) {
+        user.upgradeLevel();
+        userDao.update(user);
     }
-    private boolean upgradeToGold(User user) {
-        if(user.getVoteCnt() >= 30) {
-            user.setLevel(Level.GOLD);
-            return true;
-        } else return false;
+
+    private boolean canUpgradeLevel(User user) {
+        switch (user.getLevel()) {
+            case BRONZE:
+                return (user.getLoginCnt() >= MIN_LOGCOUNT_FOR_SILVER);
+            case SILVER:
+                return (user.getVoteCnt() >= MIN_VOTECOUNT_FOR_GOLD);
+            case GOLD:
+                return false;
+            default:
+                throw new IllegalArgumentException("unknown level : " + user.getLevel());
+        }
     }
 
     public void add(User user) {

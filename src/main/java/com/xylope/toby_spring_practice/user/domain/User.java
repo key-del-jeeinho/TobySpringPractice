@@ -5,6 +5,7 @@ import lombok.*;
 
 @EqualsAndHashCode
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class User {
     @Getter @NonNull
     private final String id;
@@ -18,4 +19,9 @@ public class User {
     private int loginCnt;
     @Getter @Setter
     private int voteCnt;
+
+    public void upgradeLevel() {
+        if(level.next() == null) throw new IllegalArgumentException("unknown level : " + level);
+        level = level.next();
+    }
 }

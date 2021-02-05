@@ -10,9 +10,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import static com.xylope.toby_spring_practice.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
+import static com.xylope.toby_spring_practice.user.service.UserService.MIN_VOTECOUNT_FOR_GOLD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -28,11 +29,11 @@ public class UserServiceTest {
     @Before
     public void setUp() {
         users = new ArrayList<>();
-        users.add(new User("acc@1BtB", "브딱이", "topgapgg", Level.BRONZE, 49, 0));
-        users.add(new User("acc@2BtS", "브4의승급전", "plz_win", Level.BRONZE, 50, 0));
-        users.add(new User("acc@3StS", "실버40LP", "noBronze", Level.SILVER, 50, 29));
-        users.add(new User("acc@4StG", "은이금으로변할떄", "plz_win", Level.SILVER, 50, 30));
-        users.add(new User("acc@5GtG", "골드황제", "plz_win", Level.GOLD, 50, 1234));
+        users.add(new User("acc@1BtB", "브딱이", "topgapgg", Level.BRONZE, MIN_LOGCOUNT_FOR_SILVER-1, 0));
+        users.add(new User("acc@2BtS", "브4의승급전", "plz_win", Level.BRONZE, MIN_LOGCOUNT_FOR_SILVER, 0));
+        users.add(new User("acc@3StS", "실버40LP", "noBronze", Level.SILVER, Integer.MAX_VALUE, MIN_VOTECOUNT_FOR_GOLD-1));
+        users.add(new User("acc@4StG", "은이금으로변할떄", "plz_win", Level.SILVER, Integer.MAX_VALUE, MIN_VOTECOUNT_FOR_GOLD));
+        users.add(new User("acc@5GtG", "골드황제", "plz_win", Level.GOLD, Integer.MAX_VALUE, Integer.MAX_VALUE));
     }
 
     @Test
@@ -47,10 +48,10 @@ public class UserServiceTest {
 
         userService.upgradeLevels();;
 
-        Level[] success_level = {Level.BRONZE, Level.SILVER, Level.SILVER, Level.GOLD, Level.GOLD};
+        boolean[] success_upgrade = {false, true, false, true, false};
 
         for(int i = 0; i < users.size(); i++) {
-            checkLevel(users.get(i), success_level[i]);
+            checkLevel(users.get(i), success_upgrade[i]);
         }
     }
 
@@ -71,8 +72,9 @@ public class UserServiceTest {
         assertEquals(userWithoutLevelRead.getLevel(), Level.BRONZE);
     }
 
-    public void checkLevel(User user, Level level) {
+    public void checkLevel(User user, boolean isUpgrade) {
         Level userLevel = dao.get(user.getId()).getLevel();
+        Level level = isUpgrade ? user.getLevel().next() : user.getLevel();
         assertEquals(userLevel, level);
     }
 }

@@ -1,7 +1,9 @@
 import com.xylope.toby_spring_practice.user.dao.UserDao;
 import com.xylope.toby_spring_practice.user.domain.Level;
 import com.xylope.toby_spring_practice.user.domain.User;
+import com.xylope.toby_spring_practice.user.service.BasicUserLevelUpgradePolicy;
 import com.xylope.toby_spring_practice.user.service.UserService;
+import lombok.AllArgsConstructor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,19 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.xylope.toby_spring_practice.user.service.BasicUserLevelUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER;
 import static com.xylope.toby_spring_practice.user.service.BasicUserLevelUpgradePolicy.MIN_VOTECOUNT_FOR_GOLD;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserServiceTest {
     @Autowired
     UserService userService;
+    @Autowired
+    DataSource dataSource;
     @Autowired
     UserDao dao;
     List<User> users;
@@ -42,11 +46,11 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeLevels() {
+    public void upgradeLevels() throws Exception {
         dao.deleteAll(); //테스트 이전 잔여데이터 초기화
         for(User user: users) dao.add(user); //테스트용 데이터를 dao 를통해 DB에 추가
 
-        userService.upgradeLevels();;
+        userService.upgradeLevels(); //트렌젝션을 통한 승급로직에서 발생하는 예외를 던진다.
 
         boolean[] success_upgrade = {false, true, false, true, false};
 
@@ -77,4 +81,33 @@ public class UserServiceTest {
         Level level = isUpgrade ? user.getLevel().next() : user.getLevel();
         assertEquals(userLevel, level);
     }
+
+    @Test
+    public void upgradeOrNothing() throws Exception {
+        dao.deleteAll();
+        for(User user : users) dao.add(user);
+
+        TestUserService userService = new TestUserService(users.get(3).getId());
+        userService.setDataSource(dataSource);
+        userService.setUserDao(dao);
+        userService.setUserLevelUpgradePolicy(new BasicUserLevelUpgradePolicy());
+        try {
+            userService.upgradeLevels(); //트렌젝션을 통한 승급로직에서 발생하는 예외를 던진다.
+            fail();
+        } catch (TestUserServiceException e) {}
+        checkLevel(users.get(1), false);
+    }
+
+    @AllArgsConstructor
+    static class TestUserService extends UserService {
+        String id;
+
+        @Override
+        protected void upgradeLevel(User user) {
+            if(user.getId().equals(id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
+        }
+    }
+
+    static class TestUserServiceException extends RuntimeException{}
 }

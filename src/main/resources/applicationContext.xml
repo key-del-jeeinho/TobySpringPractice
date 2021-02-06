@@ -5,7 +5,10 @@
 
     <bean id="userService" class="com.xylope.toby_spring_practice.user.service.UserService">
         <property name="userDao" ref="userDao"/>
+        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
     </bean>
+
+    <bean id="userLevelUpgradePolicy" class="com.xylope.toby_spring_practice.user.service.BasicUserLevelUpgradePolicy"/>
 
     <bean id="userDao" class="com.xylope.toby_spring_practice.user.dao.UserDaoJdbc">
         <property name="jdbcOperations" ref="jdbcTemplate"/>

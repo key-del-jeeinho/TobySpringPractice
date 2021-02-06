@@ -12,8 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.xylope.toby_spring_practice.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static com.xylope.toby_spring_practice.user.service.UserService.MIN_VOTECOUNT_FOR_GOLD;
+import static com.xylope.toby_spring_practice.user.service.BasicUserLevelUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER;
+import static com.xylope.toby_spring_practice.user.service.BasicUserLevelUpgradePolicy.MIN_VOTECOUNT_FOR_GOLD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

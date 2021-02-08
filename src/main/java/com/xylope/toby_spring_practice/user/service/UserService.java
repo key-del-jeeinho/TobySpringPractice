@@ -4,13 +4,11 @@ import com.xylope.toby_spring_practice.user.dao.UserDao;
 import com.xylope.toby_spring_practice.user.domain.Level;
 import com.xylope.toby_spring_practice.user.domain.User;
 import lombok.Setter;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-
-import java.sql.Connection;
 import java.util.List;
 
 public class UserService {
@@ -20,6 +18,8 @@ public class UserService {
     UserLevelUpgradePolicy userLevelUpgradePolicy;
     @Setter
     PlatformTransactionManager transactionManager;
+    @Setter
+    MailSender mailSender;
 
 
     public void upgradeLevels() {
@@ -39,10 +39,20 @@ public class UserService {
 
     protected void upgradeLevel(User user) {
         userLevelUpgradePolicy.upgradeLevel(user, userDao);
+        sendUpgradeMsgToEmail(user);
     }
 
     protected boolean canUpgradeLevel(User user) {
         return userLevelUpgradePolicy.canUpgradeLevel(user);
+    }
+
+    protected void sendUpgradeMsgToEmail(User user) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("admin@spring.com");
+        message.setTo(user.getEmail());
+        message.setSubject("토비의 스프링 안내사항입니다.");
+        message.setText("님 렙업함 ㅅㄱ");
+        mailSender.send();
     }
 
     public void add(User user) {

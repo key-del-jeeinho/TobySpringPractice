@@ -4,12 +4,14 @@ import com.xylope.toby_spring_practice.user.domain.User;
 import com.xylope.toby_spring_practice.user.service.BasicUserLevelUpgradePolicy;
 import com.xylope.toby_spring_practice.user.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ public class UserServiceTest {
     @Autowired
     UserService userService;
     @Autowired
+    PlatformTransactionManager transactionManager;
+    @Autowired
     DataSource dataSource;
     @Autowired
     UserDao dao;
@@ -33,11 +37,11 @@ public class UserServiceTest {
     @Before
     public void setUp() {
         users = new ArrayList<>();
-        users.add(new User("acc@1BtB", "브딱이", "topgapgg", Level.BRONZE, MIN_LOGCOUNT_FOR_SILVER-1, 0));
-        users.add(new User("acc@2BtS", "브4의승급전", "plz_win", Level.BRONZE, MIN_LOGCOUNT_FOR_SILVER, 0));
-        users.add(new User("acc@3StS", "실버40LP", "noBronze", Level.SILVER, Integer.MAX_VALUE, MIN_VOTECOUNT_FOR_GOLD-1));
-        users.add(new User("acc@4StG", "은이금으로변할떄", "plz_win", Level.SILVER, Integer.MAX_VALUE, MIN_VOTECOUNT_FOR_GOLD));
-        users.add(new User("acc@5GtG", "골드황제", "plz_win", Level.GOLD, Integer.MAX_VALUE, Integer.MAX_VALUE));
+        users.add(new User("acc@1BtB", "admin@email.com", "브딱이", "topgapgg", Level.BRONZE, MIN_LOGCOUNT_FOR_SILVER-1, 0));
+        users.add(new User("acc@2BtS", "admin1@email.com", "브4의승급전", "plz_win", Level.BRONZE, MIN_LOGCOUNT_FOR_SILVER, 0));
+        users.add(new User("acc@3StS", "admin2@email.com", "실버40LP", "noBronze", Level.SILVER, Integer.MAX_VALUE, MIN_VOTECOUNT_FOR_GOLD-1));
+        users.add(new User("acc@4StG", "admin3@email.com", "은이금으로변할떄", "plz_win", Level.SILVER, Integer.MAX_VALUE, MIN_VOTECOUNT_FOR_GOLD));
+        users.add(new User("acc@5GtG", "admin4@email.com", "골드황제", "plz_win", Level.GOLD, Integer.MAX_VALUE, Integer.MAX_VALUE));
     }
 
     @Test
@@ -63,8 +67,8 @@ public class UserServiceTest {
     public void add() {
         dao.deleteAll(); //테스트 이전 잔여데이터 초기화
 
-        User userWithLevel = new User("acc@2", "위드미위드레벨", "novel", Level.GOLD, 0, 0);
-        User userWithoutLevel = new User("acc@1", "슈퍼계정이라랩없음", "novel", null, 0, 0);
+        User userWithLevel = new User("acc@2", "admin@email.com", "위드미위드레벨", "novel", Level.GOLD, 0, 0);
+        User userWithoutLevel = new User("acc@1", "admin2@email.com", "슈퍼계정이라랩없음", "novel", null, 0, 0);
 
         userService.add(userWithLevel);
         userService.add(userWithoutLevel);
@@ -88,7 +92,7 @@ public class UserServiceTest {
         for(User user : users) dao.add(user);
 
         TestUserService userService = new TestUserService(users.get(3).getId());
-        userService.setDataSource(dataSource);
+        userService.setTransactionManager(transactionManager);
         userService.setUserDao(dao);
         userService.setUserLevelUpgradePolicy(new BasicUserLevelUpgradePolicy());
         try {

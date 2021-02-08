@@ -10,6 +10,8 @@ public class User {
     @Getter @NonNull
     private final String id;
     @Getter @Setter
+    private String email;
+    @Getter @Setter
     private String name;
     @Getter @Setter
     private String password;

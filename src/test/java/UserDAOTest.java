@@ -44,8 +44,8 @@ public class UserDAOTest {
     public void testAddAndGet() throws SQLException {
         //테스트 더미데이터 설정
         User[] users = {
-                new User("acc1@", "김아무개", "amugae11@", Level.BRONZE, 0, 0),
-                new User("acc2@", "개돌순", "st0neGirl@", Level.BRONZE, 0, 0)
+                new User("acc1@", "admin@email.com",  "김아무개", "amugae11@", Level.BRONZE, 0, 0),
+                new User("acc2@", "admin2@email.com", "개돌순", "st0neGirl@", Level.BRONZE, 0, 0)
         };
 
         assertEquals(dao.getCount(), 0); //테이블에 아직 행을 추가하지 않았으므로, 튜플의 수가 0이어야함 <- getCount 메서드 테스트
@@ -71,9 +71,9 @@ public class UserDAOTest {
 
         //테스트 더미데이터 설정
         User[] users = {
-                new User("acc1@", "홍길동", "sujaXD@", Level.BRONZE, 0, 0),
-                new User("acc2@", "땡철이", "stupid123@", Level.BRONZE, 0, 0),
-                new User("acc3@", "이몽룡", "lovechun12", Level.BRONZE, 0, 0),
+                new User("acc1@", "admin@email.com", "홍길동", "sujaXD@", Level.BRONZE, 0, 0),
+                new User("acc2@", "admin2@email.com", "땡철이", "stupid123@", Level.BRONZE, 0, 0),
+                new User("acc3@", "admin3@email.com", "이몽룡", "lovechun12", Level.BRONZE, 0, 0),
         };
 
         //예상 카운트값
@@ -89,7 +89,7 @@ public class UserDAOTest {
     public void getUserFailure() throws SQLException {
         assertEquals(dao.getCount(), 0);
 
-        User user = new User("acc@", "말복순", "fortune01@", Level.BRONZE, 0, 0);
+        User user = new User("acc@", "admin@email.com", "말복순", "fortune01@", Level.BRONZE, 0, 0);
         dao.add(user);
 
         dao.get("acc_unknown@");
@@ -99,9 +99,9 @@ public class UserDAOTest {
     public void getAll() throws SQLException {
         //테스트 더미데이터 설정
         User[] users = {
-                new User("acc1@", "홍길동", "sujaXD@", Level.BRONZE, 0, 0),
-                new User("acc2@", "땡철이", "stupid123@", Level.BRONZE, 0, 0),
-                new User("acc3@", "이몽룡", "lovechun12", Level.BRONZE, 0, 0),
+                new User("acc1@", "admin@email.com", "홍길동", "sujaXD@", Level.BRONZE, 0, 0),
+                new User("acc2@", "admin2@email.com", "땡철이", "stupid123@", Level.BRONZE, 0, 0),
+                new User("acc3@", "admin3@email.com", "이몽룡", "lovechun12", Level.BRONZE, 0, 0),
         };
 
         for(User user : users)
@@ -120,7 +120,7 @@ public class UserDAOTest {
 
     @Test
     public void duplicateKey() {
-        User user = new User("acc1@", "홍길동", "sujaXD@", Level.BRONZE, 0, 0);
+        User user = new User("acc1@", "admin@email.com", "홍길동", "sujaXD@", Level.BRONZE, 0, 0);
 
         try {
             dao.add(user);
@@ -135,8 +135,8 @@ public class UserDAOTest {
 
     @Test
     public void updateData() {
-        User user = new User("acc1@", "홍길동", "sujaXD@", Level.BRONZE, 0, 0);
-        User user2 = new User("acc2@", "땡철이", "stupid123@", Level.BRONZE, 0, 0);
+        User user = new User("acc1@", "admin@email.com", "홍길동", "sujaXD@", Level.BRONZE, 0, 0);
+        User user2 = new User("acc2@", "admin2@email.com", "땡철이", "stupid123@", Level.BRONZE, 0, 0);
 
         dao.add(user);
         dao.add(user2);
